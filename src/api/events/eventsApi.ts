@@ -14,7 +14,10 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
+  (error: unknown) => {
+    if (error instanceof Error) {
+      return Promise.reject(error);
+    }
+    return Promise.reject(new Error(String(error)));
   }
 );
