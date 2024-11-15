@@ -10,10 +10,12 @@ import { LoginData, LoginResponse } from "../../../types/api/user";
 import { ApiErrorResponse } from "../../../types/api/common";
 import { AxiosError } from "axios";
 import { loginErrorMessages } from "../../../constants/api";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+import { useAuth } from "../../../hooks/useAuth";
 
 const LoginForm = () => {
+  const { saveAuthInfo } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -30,8 +32,10 @@ const LoginForm = () => {
     mutationFn: sendLoginRequest,
 
     onSuccess: (response: LoginResponse) => {
-      toast.success(`환영합니다 !`);
-      console.log(response);
+      const token = response.data?.accessToken;
+      if (token) {
+        saveAuthInfo(token);
+      }
     },
 
     onError: (error: AxiosError<ApiErrorResponse>) => {
@@ -90,7 +94,6 @@ const LoginForm = () => {
           <Button type="submit">로그인</Button>
         </form>
       </Container>
-      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 };
