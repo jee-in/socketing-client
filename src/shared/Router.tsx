@@ -8,6 +8,7 @@ import ReservationConfirmationPage from "../components/pages/ReservationConfirma
 import EventDetailPage from "../components/pages/EventDetailPage";
 import WaitingRoomPage from "../components/pages/WatingRoomPage";
 import SearchResultsPage from "../components/pages/SearchResultsPage";
+import RegisterEventPage from "../components/pages/RegisterEventPage";
 
 const Router = () => {
   return (
@@ -18,6 +19,7 @@ const Router = () => {
         <Route path="join" element={<JoinPage />} />
         <Route path="mypage" element={<Mypage />} />
         <Route path="event/:id" element={<EventDetailPage />} />
+        <Route path="register" element={<RegisterEventPage />} />
         <Route path="reservation/:id" element={<ReservationPage />} />
         <Route
           path="/search-results/:searchTerm"
