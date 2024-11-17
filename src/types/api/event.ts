@@ -16,8 +16,9 @@ export interface Event {
 export interface EventDate {
   id: string;
   date: string;
-  createdAt: string;
-  updatedAt: string;
+  event?: EventsResponse;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type EventsResponse = ApiResponse<Event[]>;
@@ -41,7 +42,7 @@ export interface NewEventResponseData {
   place: string;
   cast: string;
   ageLimit: number;
-  eventDates: string[];
+  eventDates?: string[];
   svg: string;
 }
 
@@ -81,11 +82,3 @@ export interface NewSeatResponseData {
 }
 
 export type NewSeatResponse = ApiResponse<NewSeatResponseData>;
-
-export interface Reservation {
-  reservation_id: string;
-  seats: Seat[];
-  event: Event;
-  created_at: string;
-  exchange_status: "0" | "1" | "2";
-}
