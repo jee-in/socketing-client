@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../atoms/buttons/Button";
 import { useNavigate } from "react-router-dom";
 import Input from "../../atoms/inputs/Input";
@@ -9,7 +9,17 @@ const Header = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
+
   const name = localStorage.getItem("name");
+
+  useEffect(() => {
+    if (localStorage.getItem("authToken")) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  });
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -24,6 +34,13 @@ const Header = () => {
     if (event.key === "Enter") {
       handleSearch();
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.setItem("authToken", "");
+    localStorage.removeItem("nickname");
+    localStorage.removeItem("name");
+    setIsLogin(false);
   };
 
   const handleRegister = () => {
@@ -60,8 +77,9 @@ const Header = () => {
             </button>
           </div>
         </div>
+        {/* 로그인/로그아웃 상태에 따른 버튼 */}
         <div className="flex space-x-4 w-[45%] md:w-[45%] lg:w-[45%] justify-end">
-          {!name ? (
+          {!isLogin ? (
             <>
               <Button
                 variant="primary"
@@ -69,27 +87,17 @@ const Header = () => {
               >
                 로그인
               </Button>
-              {/* <Button
-              variant="primary"
-              onClick={() => {
-                navigate("/join");
-              }}
-            >
-              회원가입
-            </Button> */}
             </>
           ) : (
             <>
-              <div className="flex items-center justify-center gap-x-2">
-                <img
-                  src="../../../../public/user_icon.svg"
-                  height=""
-                  width="24px"
-                />
-                <span className="text-white">{name} 님</span>
+              <div className="flex items-center space-x-4">
+                <span className="text-white">{name}님, 안녕하세요</span>
+                <Button variant="primary" onClick={handleLogout}>
+                  로그아웃
+                </Button>
               </div>
               <div className="hidden md:block">
-                <Button variant="primary" onClick={() => handleRegister()}>
+                <Button variant="primary" onClick={handleRegister}>
                   공연 등록하기
                 </Button>
               </div>
