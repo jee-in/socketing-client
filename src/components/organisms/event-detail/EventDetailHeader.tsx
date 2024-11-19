@@ -22,34 +22,47 @@ const EventDetailHeader = () => {
   };
 
   return (
-    <div
-      id="event-header"
-      className="w-full h-36 px-28 py-3 flex items-center bg-gray-100"
-    >
-      <div id="poster-container" className="poster-box bg-amber-200">
-        <img
-          className="h-full object-contain"
-          src={event.thumbnail}
-          alt="event poster image"
-        />
-      </div>
+    <>
       <div
-        id="event-title-container"
-        className="h-full bg-gray-300 p-2 flex items-center"
-      >
-        <h1 className="text-2xl font-bold">{event.title}</h1>
-      </div>
-      {/* 삭제 버튼 */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation(); // 부모 div 클릭 방지
-          void onDeleteHandler();
+        id="background-image"
+        className="absolute inset-0 w-full h-full"
+        style={{
+          backgroundImage: `url(${event.thumbnail})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          opacity: "0.5",
         }}
-        className="absolute right-5 bg-transparent border border-red-500 text-red-500 text-xs px-2 py-1 rounded hover:bg-red-500 hover:text-white"
-      >
-        삭제
-      </button>
-    </div>
+      />
+
+      <div className="relative w-full h-full px-28 py-3 flex items-center bg-gray-100/50">
+        <div id="poster-container" className="poster-box">
+          <img
+            className="h-full object-contain"
+            src={event.thumbnail}
+            alt="event poster image"
+          />
+        </div>
+        <div
+          id="event-title-container"
+          className="flex flex-col flex-grow h-full p-4 justify-center items-start"
+        >
+          <h1 className="text-2xl font-bold py-2">{event.title}</h1>
+          <p className="pl-1 font-bold text-stone-600">{event.place}</p>
+        </div>
+        <div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // 부모 div 클릭 방지
+              void onDeleteHandler();
+            }}
+            className="absolute right-5 bg-transparent border border-red-500 text-red-500 text-xs px-2 py-1 rounded hover:bg-red-500 hover:text-white"
+          >
+            삭제
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
 

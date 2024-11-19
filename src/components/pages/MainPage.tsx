@@ -1,7 +1,6 @@
 import MainLayout from "../layout/MainLayout";
 import CardList from "../templates/cardList/CardList";
 import MainBanner from "../templates/mainBanner/MainBanner";
-// import CategorySection from "../templates/category/CategorySection";
 import { fetchAllEvents } from "../../api/events/eventsApi";
 import { EventsResponse } from "../../types/api/event";
 import { createResourceQuery } from "../../hooks/useCustomQuery";
@@ -24,7 +23,6 @@ const MainPage = () => {
   return (
     <MainLayout>
       <MainBanner events={eventData}></MainBanner>
-      {/* <CategorySection></CategorySection> */}
       <CardList events={eventData}></CardList>
     </MainLayout>
   );
