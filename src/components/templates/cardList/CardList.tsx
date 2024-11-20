@@ -1,3 +1,4 @@
+import { formatToKoreanDateAndTime } from "../../../utils/dateUtils";
 import { EventListProps } from "../../organisms/event-lists/EventList";
 import { useNavigate } from "react-router-dom";
 
@@ -26,11 +27,7 @@ const CardList = ({ events }: EventListProps) => {
               <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
               <div className="space-y-1 text-sm text-gray-600">
                 <p>
-                  일시:{" "}
-                  {new Date(event.eventDates[0].date)
-                    .toISOString()
-                    .replace("T", " ")
-                    .slice(0, 16)}
+                  일시: {formatToKoreanDateAndTime(event.eventDates[0].date)}
                 </p>
                 <p>장소: {event.place}</p>
               </div>
