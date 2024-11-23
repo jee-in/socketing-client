@@ -1,4 +1,4 @@
-import { UserResponseData } from "./user";
+import { User } from "./user";
 import { EventDate, Seat } from "./event";
 import { ApiResponse } from "./common";
 
@@ -7,9 +7,9 @@ export interface NewReservation {
   eventDateId: string;
   seatId: string;
 }
-export interface NewReservationResponseData {
+export interface Reservation {
   id: string;
-  user: UserResponseData;
+  user: User;
   eventDate: EventDate;
   seat: Seat;
 
@@ -17,6 +17,6 @@ export interface NewReservationResponseData {
   update_at?: string;
 }
 
-export type NewReservationResponse = ApiResponse<NewReservationResponseData>;
+export type NewReservationResponse = ApiResponse<Reservation>;
 
-export type ReservationsResponse = ApiResponse<NewReservationResponseData[]>;
+export type ReservationsResponse = ApiResponse<Reservation[]>;
