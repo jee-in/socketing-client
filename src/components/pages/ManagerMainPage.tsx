@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const ManagerMainPage = () => {
   const navigate = useNavigate();
   const useEvents = createResourceQuery<EventsResponse>(
-    "all-events",
+    "created-events-by-manager",
     fetchAllEvents
   );
 
