@@ -15,7 +15,7 @@ const Header = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [name, setName] = useState("");
-  const { setUserId, setUserRole } = useContext(UserContext);
+  const { setUserId, setUserRole, currentRole } = useContext(UserContext);
   const [isManager, setIsManager] = useState(false);
 
   // 로그인 상태를 체크하는 함수
@@ -40,17 +40,13 @@ const Header = () => {
 
   const checkIsManager = () => {
     const role = localStorage.getItem("userRole");
-    if (role === "manager") {
-      setIsManager(true);
-    } else {
-      setIsManager(false);
-    }
+    setIsManager(role === "manager");
   };
 
   useEffect(() => {
     checkLoginStatus();
     checkIsManager();
-  }, []);
+  }, [currentRole]);
 
   const isTokenExpired = (token: string): boolean => {
     try {
@@ -157,14 +153,15 @@ const Header = () => {
                 <Button variant="primary" onClick={handleLogout}>
                   로그아웃
                 </Button>
-                {isManager && (
+                {isManager ? (
                   <Button variant="primary" onClick={handleRegister}>
                     공연 등록하기
                   </Button>
+                ) : (
+                  <Button variant="primary" onClick={openMyPage}>
+                    마이페이지
+                  </Button>
                 )}
-                <Button variant="primary" onClick={openMyPage}>
-                  마이페이지
-                </Button>
               </div>
             </>
           )}
