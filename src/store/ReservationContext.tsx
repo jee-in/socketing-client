@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { Socket } from "socket.io-client";
 import { useSocketConnection } from "../hooks/useSocketConnection";
 import { SeatSelectedResponse } from "../types/api/socket";
@@ -41,11 +41,25 @@ interface ReservationContextType {
   selectedSeat: Seat | null;
   setSelectedSeat: (seat: Seat | null) => void;
   reserveSeat: (seatId: string, eventId: string, eventDateId: string) => void;
+  adjacentSeats: Seat[];
+  setAdjacentSeats: (seats: Seat[]) => void;
+  ticketsToReserve: number;
+  setTicketsToReserve: (count: number) => void;
 }
 
 export const ReservationContext = createContext<ReservationContextType>(
   {} as ReservationContextType
 );
+
+export const useReservationContext = () => {
+  const context = useContext(ReservationContext);
+  if (!context) {
+    throw new Error(
+      "useReservationContext must be used within a ReservationProvider"
+    );
+  }
+  return context;
+};
 
 export const ReservationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -56,6 +70,8 @@ export const ReservationProvider: React.FC<{ children: React.ReactNode }> = ({
   const [seatsMap, setSeatsMap] = useState<Map<string, Seat>>(new Map());
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
+  const [adjacentSeats, setAdjacentSeats] = useState<Seat[]>([]);
+  const [ticketsToReserve, setTicketsToReserve] = useState(1);
 
   const updateSeat = (seatId: string, updates: Partial<Seat>) => {
     setSeatsMap((prev) => {
@@ -143,6 +159,10 @@ export const ReservationProvider: React.FC<{ children: React.ReactNode }> = ({
     selectedSeat,
     setSelectedSeat,
     reserveSeat,
+    adjacentSeats,
+    setAdjacentSeats,
+    ticketsToReserve,
+    setTicketsToReserve,
   };
 
   return (
