@@ -9,6 +9,14 @@ const getUserInfo = async (user_id: string): Promise<UserResponse> => {
   return response.data;
 };
 
+const getUserInfoByEmail = async (email: string): Promise<UserResponse> => {
+  const modifiedEmail = email + "@jungle.com";
+  const response = await axios.get<UserResponse>(
+    API_URL + "email/" + modifiedEmail
+  );
+  return response.data;
+};
+
 const updateUserNickname = async (
   user_id: string,
   newNickname: string
@@ -33,4 +41,4 @@ const updateUserNickname = async (
     throw error;
   }
 };
-export { getUserInfo, updateUserNickname };
+export { getUserInfo, updateUserNickname, getUserInfoByEmail };

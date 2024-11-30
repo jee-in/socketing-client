@@ -1,5 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import ReservationLayout from "../layout/ReservationLayout";
+import MainLayout from "../layout/MainLayout";
 import ReservationUpperEvent from "../organisms/reservation/ReservationUpperEvent";
 import ReservationSeatContainer from "../organisms/reservation/ReservationSeatContainer";
 import ReservationMinimap from "../organisms/reservation/ReservationMinimap";
@@ -9,30 +11,19 @@ import { createResourceQuery } from "../../hooks/useCustomQuery";
 import { SingleEventResponse } from "../../types/api/event";
 import { fetchErrorMessages } from "../../constants/errorMessages";
 import ReservationSeatInfo from "../organisms/reservation/ReservationSeatInfo";
-import MainLayout from "../layout/MainLayout";
-import ReservationLayout from "../layout/ReservationLayout";
 
 const ReservationPage: React.FC = () => {
   const { eventId: urlEventId, eventDateId: urlEventDateId } = useParams();
-  const {
-    setEventId,
-    setEventDateId,
-    isConnected,
-    setTicketsToReserve,
-    ticketsToReserve,
-  } = useContext(ReservationContext);
+  const { setEventId, setEventDateId, isConnected, setNumberOfTickets } =
+    useContext(ReservationContext);
   const location = useLocation();
 
   useEffect(() => {
-    const state = location.state as { ticketsToReserve?: number };
-    if (state?.ticketsToReserve) {
-      setTicketsToReserve(state.ticketsToReserve);
+    const state = location.state as { numberOfTickets?: number };
+    if (state?.numberOfTickets) {
+      setNumberOfTickets(state.numberOfTickets);
     }
-    console.log(ticketsToReserve);
-  }, [location.state, setTicketsToReserve]);
-
-  // const [isLeftSidebarOpen, setIsLeftSidebarOpen] =
-  //   React.useState<boolean>(true);
+  }, [location.state, setNumberOfTickets]);
 
   // Event Data Query
   const useEvent = createResourceQuery<SingleEventResponse>(
@@ -63,14 +54,9 @@ const ReservationPage: React.FC = () => {
     <MainLayout>
       <ReservationLayout
         topContent={<ReservationUpperEvent {...eventData.data} />}
-        // leftSidebarContent={
-        //   <ReservationCalendarSideBar dateData={eventData.data.eventDates} />
-        // }
         centerContent={<ReservationSeatContainer svg={eventData.data.svg} />}
         rightTopContent={<ReservationMinimap />}
         rightBottomContent={<ReservationSeatInfo />}
-        // isLeftSidebarOpen={isLeftSidebarOpen}
-        // toggleSidebar={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
       />
     </MainLayout>
   );

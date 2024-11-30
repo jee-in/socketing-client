@@ -1,30 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { Socket } from "socket.io-client";
 import { useSocketConnection } from "../hooks/useSocketConnection";
-import { SeatSelectedResponse } from "../types/api/socket";
-
-// Types
-interface Reservation {
-  id: string;
-  eventDate: {
-    id: string;
-    date: string;
-  };
-}
-
-interface Seat {
-  id: string;
-  cx: number;
-  cy: number;
-  area: number;
-  row: number;
-  number: number;
-  reservations: Reservation[];
-  selectedBy?: string | null;
-  updatedAt: string;
-  expirationTime: string;
-  reservedBy?: string;
-}
+import { Seat, SeatsSelectedResponse } from "../types/api/socket";
+import { toast } from "react-toastify";
 
 interface ReservationContextType {
   socket: Socket | null;
@@ -34,17 +12,18 @@ interface ReservationContextType {
   eventDateId: string | null;
   setEventDateId: (id: string) => void;
   seatsMap: Map<string, Seat>;
-  updateSeat: (seatId: string, updates: Partial<Seat>) => void;
-  joinRoom: (eventId: string, eventDateId: string) => void;
-  selectSeat: (seatId: string) => void;
+  // updateSeat: (seatId: string, updates: Partial<Seat>) => void;
+  joinRoom: () => void;
+  selectSeats: (seatId: string, numberOfSeats: number) => void;
+  // requestAdjacentSeats: (seatId: string, numberOfSeats: number) => void;
   currentUserId: string | null;
   selectedSeat: Seat | null;
   setSelectedSeat: (seat: Seat | null) => void;
   reserveSeat: (seatId: string, eventId: string, eventDateId: string) => void;
   adjacentSeats: Seat[];
   setAdjacentSeats: (seats: Seat[]) => void;
-  ticketsToReserve: number;
-  setTicketsToReserve: (count: number) => void;
+  numberOfTickets: number;
+  setNumberOfTickets: (count: number) => void;
 }
 
 export const ReservationContext = createContext<ReservationContextType>(
@@ -71,37 +50,70 @@ export const ReservationProvider: React.FC<{ children: React.ReactNode }> = ({
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
   const [adjacentSeats, setAdjacentSeats] = useState<Seat[]>([]);
-  const [ticketsToReserve, setTicketsToReserve] = useState(1);
+  const [numberOfTickets, setNumberOfTickets] = useState(1);
 
-  const updateSeat = (seatId: string, updates: Partial<Seat>) => {
+  // const updateSeat = (seatId: string, updates: Partial<Seat>) => {
+  //   setSeatsMap((prev) => {
+  //     const newMap = new Map(prev);
+  //     const currentSeat = newMap.get(seatId);
+  //     if (currentSeat) {
+  //       newMap.set(seatId, {
+  //         ...currentSeat,
+  //         ...updates,
+  //         selectedBy: updates.selectedBy,
+  //         reservedBy: updates.reservedBy,
+  //       });
+  //     }
+  //     return newMap;
+  //   });
+  // };
+
+  const updateSeats = (seats: SeatsSelectedResponse[]) => {
     setSeatsMap((prev) => {
       const newMap = new Map(prev);
-      const currentSeat = newMap.get(seatId);
-      if (currentSeat) {
-        newMap.set(seatId, {
-          ...currentSeat,
-          ...updates,
-          selectedBy: updates.selectedBy,
-          reservedBy: updates.reservedBy,
-        });
-      }
+      setAdjacentSeats([]);
+      seats.forEach((seat) => {
+        const currentSeat = newMap.get(seat.seatId);
+        if (currentSeat) {
+          setAdjacentSeats((prev) => [...prev, currentSeat]);
+          newMap.set(seat.seatId, {
+            ...currentSeat,
+            ...seat,
+          });
+        }
+      });
       return newMap;
     });
   };
 
-  const joinRoom = (eventId: string, eventDateId: string) => {
+  const joinRoom = () => {
+    if (!socket || !eventId || !eventDateId) return;
     socket?.emit("joinRoom", { eventId, eventDateId });
   };
 
-  const selectSeat = (seatId: string) => {
+  const selectSeats = (seatId: string, numberOfSeats: number) => {
     if (!socket || !eventId || !eventDateId) return;
     // Only emit the event, don't update state directly
     const seat = seatsMap.get(seatId);
     if (seat) {
       setSelectedSeat(seat);
     }
-    socket.emit("selectSeat", { seatId, eventId, eventDateId });
+    socket.emit("selectSeats", { seatId, eventId, eventDateId, numberOfSeats });
   };
+
+  // const requestAdjacentSeats = (seatId: string, numberOfSeats: number) => {
+  //   if (!socket || !eventId || !eventDateId) return;
+  //   const seat = seatsMap.get(seatId);
+  //   if (seat) {
+  //     setSelectedSeat(seat);
+  //   }
+  //   socket.emit("requestAdjacentSeats", {
+  //     seatId,
+  //     eventId,
+  //     eventDateId,
+  //     numberOfSeats,
+  //   }); // 새로운 이벤트 이름을 쓰게 된다면
+  // };
 
   const reserveSeat = (seatId: string) => {
     if (!socket || !seatId || !eventId || !eventDateId) return;
@@ -122,25 +134,30 @@ export const ReservationProvider: React.FC<{ children: React.ReactNode }> = ({
       setSeatsMap(newSeatsMap);
     });
 
-    socket.on("seatSelected", (data: SeatSelectedResponse) => {
-      updateSeat(data.seatId, {
-        selectedBy: data.selectedBy,
-        updatedAt: data.updatedAt,
-        expirationTime: data.expirationTime,
-        reservedBy: data.reservedBy,
-      });
+    socket.on("seatsSelected", (data: SeatsSelectedResponse[]) => {
+      updateSeats(data);
+    });
+
+    // socket.on("adjacentSeatsSelected", (data: SeatSelectedResponse[]) => {
+    //   updateSeats(data);
+    // });
+
+    socket.on("error", (data) => {
+      console.error("Error received from server:", data.message);
+      toast.error("요청하신 티켓 수 만큼의 좌석이 없습니다.");
     });
 
     return () => {
       socket.off("connect");
       socket.off("roomJoined");
-      socket.off("seatSelected");
+      socket.off("seatsSelected");
+      // socket.off("adjacentSeatsSelected");
     };
   }, [socket]);
 
   useEffect(() => {
     if (socket && eventId && eventDateId) {
-      joinRoom(eventId, eventDateId);
+      joinRoom();
     }
   }, [socket, eventId, eventDateId]);
 
@@ -152,17 +169,18 @@ export const ReservationProvider: React.FC<{ children: React.ReactNode }> = ({
     eventDateId,
     setEventDateId,
     seatsMap,
-    updateSeat,
+    // updateSeat,
     joinRoom,
-    selectSeat,
+    selectSeats,
+    // requestAdjacentSeats,
     currentUserId,
     selectedSeat,
     setSelectedSeat,
     reserveSeat,
     adjacentSeats,
     setAdjacentSeats,
-    ticketsToReserve,
-    setTicketsToReserve,
+    numberOfTickets,
+    setNumberOfTickets,
   };
 
   return (

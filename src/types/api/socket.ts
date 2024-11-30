@@ -21,20 +21,30 @@ export interface Seat {
   reservedBy?: string;
 }
 
-export interface UserList {
-  count: number;
-  users: string[];
-}
+// export interface UserList {
+//   count: number;
+//   users: string[];
+// }
 
 export interface RoomJoinedResponse {
   message: string;
   seats: Seat[];
 }
 
-export interface SeatSelectedResponse {
+export interface SeatsSelectedResponse {
   seatId: string;
   selectedBy: string | null;
   updatedAt: string;
+  expirationTime: string;
+  reservedBy?: string;
+}
+
+// export interface AdjacentSeatsResponse {
+//   seats: SeatSelectedResponse[];
+// }
+
+export interface ErrorResponse {
+  message: string;
 }
 
 // Socket Event Types
@@ -43,14 +53,19 @@ export interface ServerToClientEvents {
   roomJoined: (response: RoomJoinedResponse) => void;
 
   // Seat events
-  seatSelected: (response: SeatSelectedResponse) => void;
+  seatsSelected: (response: SeatsSelectedResponse[]) => void;
+  // seatSelected: (response: SeatsSelectedResponse) => void;
   "seat:update": (seat: Seat) => void;
   "seats:bulk_update": (seats: Seat[]) => void;
   "seat:error": (error: { message: string; seatId: string }) => void;
 
   // Server info events
   serverTime: (time: string) => void;
-  userList: (userList: UserList) => void;
+  // userList: (userList: UserList) => void;
+
+  // Adjacent seat events
+  // adjacentSeatsSelected: (response: SeatSelectedResponse[]) => void;
+  error: (response: ErrorResponse) => void;
 }
 
 export interface ClientToServerEvents {
@@ -60,12 +75,22 @@ export interface ClientToServerEvents {
   // Seat events
   "seat:watch": (seatId: string) => void;
   "seat:unwatch": (seatId: string) => void;
-  selectSeat: (params: {
+  "seat:temporary_hold": (seatId: string) => void;
+
+  selectSeats: (params: {
     seatId: string;
     eventId: string;
     eventDateId: string;
+    numberOfSeats: number;
   }) => void;
-  "seat:temporary_hold": (seatId: string) => void;
+
+  // requestAdjacentSeats: (params: {
+  //   seatId: string;
+  //   eventId: string;
+  //   eventDateId: string;
+  //   numberOfSeats: number;
+  // }) => void;
+
   reserveSeat: (params: {
     seatId: string;
     eventId: string;
@@ -81,18 +106,10 @@ export type SeatStatus =
   | "available"
   | "reserved"
   | "selected"
-  | "temporary_hold"
-  | "adjacent";
+  | "temporary_hold";
+// | "adjacent";
 
 export interface Point {
   x: number;
   y: number;
-}
-
-export interface SeatSelectedResponse {
-  seatId: string;
-  selectedBy: string | null;
-  updatedAt: string;
-  expirationTime: string;
-  reservedBy?: string;
 }
