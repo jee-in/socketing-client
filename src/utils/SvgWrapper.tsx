@@ -9,14 +9,19 @@ interface SvgWrapperProps {
   renderSeat: (seat: Seat) => React.ReactNode;
 }
 
-// SVG 데이터의 타입 정의
 interface ParsedSvgData {
   svgString: string;
 }
 
 function SvgWrapper({ svgString, seats, areas, renderSeat }: SvgWrapperProps) {
-  const { joinArea, setSeatsMap, currentAreaId, setCurrentAreaId, exitArea } =
-    useContext(ReservationContext);
+  const {
+    joinArea,
+    setSeatsMap,
+    currentAreaId,
+    setCurrentAreaId,
+    exitArea,
+    areaStats,
+  } = useContext(ReservationContext);
   const [svgContent, setSvgContent] = useState<{
     viewBox: string;
     content: string;
@@ -53,6 +58,33 @@ function SvgWrapper({ svgString, seats, areas, renderSeat }: SvgWrapperProps) {
     }
   }, [svgString]);
 
+  useEffect(() => {
+    if (!areaStats) return;
+
+    const interpolateColor = (ratio: number) => {
+      // Blue to gray interpolation
+      const startColor = { r: 0, g: 122, b: 255 }; // #007AFF
+      const endColor = { r: 128, g: 128, b: 128 }; // #808080
+
+      const r = Math.round(startColor.r + (endColor.r - startColor.r) * ratio);
+      const g = Math.round(startColor.g + (endColor.g - startColor.g) * ratio);
+      const b = Math.round(startColor.b + (endColor.b - startColor.b) * ratio);
+
+      return `rgb(${r},${g},${b})`;
+    };
+
+    areaStats.forEach((stat) => {
+      const areaElement = document.querySelector(
+        `.areas [class='${stat.areaId}'] .area-data`
+      );
+      if (areaElement) {
+        const ratio = stat.reservedSeatsNum / stat.totalSeatsNum;
+        const color = interpolateColor(ratio);
+        (areaElement as SVGPathElement).setAttribute("fill", color);
+      }
+    });
+  }, [areaStats]);
+
   if (!svgContent.viewBox) return null;
 
   return (
@@ -69,6 +101,7 @@ function SvgWrapper({ svgString, seats, areas, renderSeat }: SvgWrapperProps) {
         {areas?.map((area) => (
           <g
             key={area.id}
+            className={area.id}
             dangerouslySetInnerHTML={{ __html: area.svg }}
             onClick={() => {
               if (currentAreaId === area.id) {
