@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserResponse } from "../../types/api/user";
+import { UserPointResponse, UserResponse } from "../../types/api/user";
 import { baseURL } from "../../constants/api";
 
 const API_URL = baseURL + "users/";
@@ -13,6 +13,13 @@ const getUserInfoByEmail = async (email: string): Promise<UserResponse> => {
   const modifiedEmail = email + "@jungle.com";
   const response = await axios.get<UserResponse>(
     API_URL + "email/" + modifiedEmail
+  );
+  return response.data;
+};
+
+const getUserPoints = async (user_id: string): Promise<UserPointResponse> => {
+  const response = await axios.get<UserPointResponse>(
+    API_URL + user_id + "/points"
   );
   return response.data;
 };
@@ -41,4 +48,4 @@ const updateUserNickname = async (
     throw error;
   }
 };
-export { getUserInfo, updateUserNickname, getUserInfoByEmail };
+export { getUserInfo, updateUserNickname, getUserInfoByEmail, getUserPoints };
