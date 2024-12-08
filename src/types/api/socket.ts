@@ -7,74 +7,21 @@ export interface Seat {
   cy: number;
   row: number;
   number: number;
-  reservations: Array<{
-    id: string;
-    eventDate: {
-      id: string;
-      date: string;
-    };
-  }>;
   selectedBy?: string | null;
   updatedAt: string;
   expirationTime: string;
-  reservedBy?: string;
+  reservedBy?: string | null;
   areaId: string;
 }
 
-interface OrderEvent {
-  title: string;
-  thumbnail: string;
-  place: string;
-  cast: string;
-  ageLimit: number;
-  ticketingStartTime: string;
-}
-
-interface OrderUser {
-  email: string;
-  nickname: string;
-  profileImage?: string;
-  role: string;
-}
-
-interface OrderReservation {
-  id: string;
-  seat: OrderSeat;
-}
-
-interface OrderSeat {
-  id: string;
-  row: number;
-  number: number;
-  area: OrderArea;
-}
-
-interface OrderArea {
-  label: string;
-  price: number;
-}
-
-export interface Order {
-  id?: string;
-  updatedAt: string;
-  createdAt: string;
-  user: OrderUser;
-}
-
-export interface OrderEventDate {
-  id: string;
-  date: string;
-}
 export interface Area {
   price: number;
   label: string;
 }
 
 export interface OrderResponseData {
-  event?: OrderEvent;
-  eventDate: OrderEventDate;
-  order?: Order;
-  reservations?: OrderReservation[];
+  id: string;
+  createdAt: string;
   seats: Seat[];
   area: Area;
 }
