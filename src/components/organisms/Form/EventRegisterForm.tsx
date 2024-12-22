@@ -1,5 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { CreateAreaRequest, NewEvent } from "../../../types/api/event";
 import Input from "../../atoms/inputs/Input";
 import Button from "../../atoms/buttons/Button";
@@ -84,7 +84,7 @@ const EventRegisterForm = () => {
   >(createNewArea, {
     onSuccess: () => {
       toast.success("공연과 좌석이 성공적으로 등록되었습니다.");
-      navigate("/");
+      void navigate("/");
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
       if (error.response?.data) {

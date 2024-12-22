@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { formatToKoreanDateAndTime } from "../../utils/dateUtils";
 import TicketButton from "../atoms/buttons/TiketButton";
 import { useCurrentTime } from "../../hooks/useCurrentTime";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
 
@@ -93,12 +93,12 @@ const UserMainPage = () => {
     hover:shadow-md  
     active:bg-gray-100 
     transition-all duration-300 cursor-pointer"
-                  onClick={() => navigate(`/event/${event.id}`)}
+                  onClick={() => void navigate(`/event/${event.id}`)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
-                      navigate(`/event/${event.id}`);
+                      void navigate(`/event/${event.id}`);
                     }
                   }}
                 >

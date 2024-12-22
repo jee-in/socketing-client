@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import Button from "../../atoms/buttons/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import LoginModal from "../../organisms/auth/LoginModal";
 import JoinModal from "../../organisms/auth/JoinModal";
 import HeaderLogo from "../../molecules/header-logo/HeaderLogo";
@@ -63,7 +63,7 @@ const Header = () => {
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
-      navigate(`/search-results/${encodeURIComponent(searchQuery)}`);
+      void navigate(`/search-results/${encodeURIComponent(searchQuery)}`);
       setSearchQuery("");
     } else {
       toast.error("검색어를 입력해주세요");
@@ -86,7 +86,7 @@ const Header = () => {
     setIsLogin(false);
     setName("");
     toast.success("로그아웃되었습니다. 다시 로그인해주세요.");
-    navigate("/");
+    void navigate("/");
   };
 
   const handleLoginSuccess = () => {
@@ -102,11 +102,11 @@ const Header = () => {
   // };
 
   const handleRegister = () => {
-    navigate("/register");
+    void navigate("/register");
   };
 
   const openMyPage = () => {
-    navigate("/mypage");
+    void navigate("/mypage");
   };
 
   return (

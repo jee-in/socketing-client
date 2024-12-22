@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Button from "../atoms/buttons/Button";
 import { createResourceQuery } from "../../hooks/useCustomQuery";
 import { managerPageErrorMessages } from "../../constants/errorMessages";
@@ -185,7 +185,7 @@ const MyPageManager = () => {
                           </div>
                           <Button
                             onClick={() =>
-                              navigate(
+                              void navigate(
                                 `/manager/${event.id}/${event.eventDates[0].id}`
                               )
                             }
@@ -198,7 +198,7 @@ const MyPageManager = () => {
                           </Button>
                           <Button
                             onClick={() =>
-                              navigate(
+                              void navigate(
                                 `/manager/${event.id}/${event.eventDates[0].id}`
                               )
                             }
@@ -266,7 +266,7 @@ const MyPageManager = () => {
                           </div>
                           <Button
                             onClick={() =>
-                              navigate(
+                              void navigate(
                                 `/manager/${event.id}/${event.eventDates[0].id}`
                               )
                             }
@@ -277,7 +277,7 @@ const MyPageManager = () => {
                           </Button>
                           <Button
                             onClick={() =>
-                              navigate(
+                              void navigate(
                                 `/manager/${event.id}/${event.eventDates[0].id}`
                               )
                             }

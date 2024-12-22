@@ -9,7 +9,7 @@ import {
   OrderResponseData,
 } from "../types/api/socket";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { UserContext } from "./UserContext";
 
 interface ReservationContextType {
@@ -176,7 +176,7 @@ export const ReservationProvider: React.FC<{ children: React.ReactNode }> = ({
     if (tokenError) {
       const currentPath = window.location.pathname;
       const pathParts = currentPath.split("/");
-      navigate(`/waiting/${pathParts[2]}/${pathParts[3]}`);
+      void navigate(`/waiting/${pathParts[2]}/${pathParts[3]}`);
     }
 
     socket.on("connect", () => {

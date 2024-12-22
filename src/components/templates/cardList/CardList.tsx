@@ -1,5 +1,5 @@
 import { CustomEventsProps } from "../../../types/api/event";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Button from "../../atoms/buttons/Button";
 import { formatToKoreanDateAndTime } from "../../../utils/dateUtils";
 
@@ -11,7 +11,7 @@ const CardList = ({ events }: CardListProps) => {
   const navigate = useNavigate();
 
   const onClickHandler = (id: string) => {
-    navigate(`/event/${id}`);
+    void navigate(`/event/${id}`);
   };
 
   return (

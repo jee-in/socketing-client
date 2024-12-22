@@ -1,7 +1,7 @@
 import { useEffect, useContext, useState } from "react";
 import { ReservationContext } from "../../../store/ReservationContext";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const PaymentTimer = () => {
   const { socket, isConnected, currentOrder, setCurrentOrder, eventId } =
@@ -45,7 +45,7 @@ const PaymentTimer = () => {
       setShowTimer(false);
       setCurrentOrder(null);
       toast.error("결제 시간이 초과되었습니다!");
-      navigate(`/event/${eventId}`);
+      void navigate(`/event/${eventId}`);
     }
   }, [serverTime, currentOrder, setCurrentOrder, showTimer]);
 

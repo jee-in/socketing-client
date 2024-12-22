@@ -1,7 +1,7 @@
 import Button from "../atoms/buttons/Button";
 import MainLayout from "../layout/MainLayout";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import { toast } from "react-toastify";
 import {
   ApprovedOrderResponse,
@@ -82,7 +82,7 @@ const OrderPage = () => {
         queryKey: [`my-orders-${userId}`],
       }); // orders 쿼리 무효화
       socket.on("orderApproved", (response: ApprovedOrderResponse) => {
-        navigate(`/reservation-confirmation`, {
+        void navigate(`/reservation-confirmation`, {
           state: { paymentData: response.data },
         });
       });

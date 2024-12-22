@@ -1,5 +1,5 @@
 import HeaderItem from "../../atoms/header-item/HeaderItem";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Button from "../../atoms/buttons/Button";
 import { HTMLAttributes } from "react";
 
@@ -10,14 +10,14 @@ const HeaderAccount = ({ className }: HTMLAttributes<HTMLDivElement>) => {
     <HeaderItem className={`${className} p-3 justify-end align-items gap-2`}>
       <Button
         onClick={() => {
-          navigate("/login");
+          void navigate("/login");
         }}
       >
         로그인
       </Button>
       <Button
         onClick={() => {
-          navigate("/join");
+          void navigate("/join");
         }}
       >
         회원가입

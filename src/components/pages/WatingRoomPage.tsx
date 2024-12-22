@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useQueueContext } from "../../store/QueueContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import { fetchOneEvent, fetchAllSeats } from "../../api/events/eventsApi";
 import { createResourceQuery } from "../../hooks/useCustomQuery";
 import { SingleEventResponse } from "../../types/api/event";
@@ -67,7 +67,7 @@ const WaitingRoomPage = () => {
   }, [urlEventId, urlEventDateId, setEventId, setEventDateId]);
 
   const enterReservationPage = () => {
-    navigate(`/reservation/${urlEventId}/${urlEventDateId}`, {
+    void navigate(`/reservation/${urlEventId}/${urlEventDateId}`, {
       state: { numberOfTickets },
     });
   };

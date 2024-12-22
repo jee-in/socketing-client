@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import MainLayout from "../layout/MainLayout";
 import Button from "../atoms/buttons/Button";
 import { createResourceQuery } from "../../hooks/useCustomQuery";
@@ -57,7 +57,7 @@ const MyPageUser = () => {
             <p className="text-2xl font-bold text-gray-700 mb-5">
               {emptyMessage}
             </p>
-            <Button onClick={() => navigate("/")}>이벤트 보러가기</Button>
+            <Button onClick={() => void navigate("/")}>이벤트 보러가기</Button>
           </div>
         ) : (
           events.map((order) => (
@@ -102,7 +102,7 @@ const MyPageUser = () => {
                 </p>
               </div>
               <Button
-                onClick={() => navigate(`/mypage/detail/${order.orderId}`)}
+                onClick={() => void navigate(`/mypage/detail/${order.orderId}`)}
                 className="hidden md:inline-block"
                 variant={`${
                   order.orderCanceledAt !== null ? "secondary" : "primary"
@@ -113,7 +113,7 @@ const MyPageUser = () => {
                   : "예매 정보 보기"}
               </Button>
               <Button
-                onClick={() => navigate(`/mypage/detail/${order.orderId}`)}
+                onClick={() => void navigate(`/mypage/detail/${order.orderId}`)}
                 size="sm"
                 className="mt-3 md:hidden"
                 variant={`${
